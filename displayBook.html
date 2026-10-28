@@ -1,1 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Display Book Records</title>
+</head>
+<body>
 
+    <h1>Book Records</h1>
+    <label for="bookSelect">Select a Book:</label>
+    <select id="bookSelect">
+        <option value="">-- Select Book --</option>
+    </select>
+
+    <div id="bookDetails"></div>
+
+    <script>
+        const jsonURL = "https://raw.githubusercontent.com/airxxn/LAB06-JSON/main/books.json";
+
+        fetch(jsonURL)
+            .then(response => response.json())
+            .then(data => {
+
+                const books = data.Books;
+                const select = document.getElementById("bookSelect");
+
+                books.forEach((book, index) => {
+                    const option = document.createElement("option");
+
+                    option.value = index;
+                    option.textContent = book.title;
+
+                    select.appendChild(option);
+                });
+
+                select.addEventListener("change", function() {
+
+                    const selectedBook = books[this.value];
+                    const details = document.getElementById("bookDetails");
+
+                    if (selectedBook) {
+                        details.innerHTML = `
+                            <h2>${selectedBook.title}</h2>
+                            <p>Author: ${selectedBook.author}</p>
+                            <p>Publication Year: ${selectedBook.publicationYear}</p>
+                            <p>Genres: ${selectedBook.genres.join(", ")}</p>
+                        `;
+                    } else {
+                        details.innerHTML = "";
+                    }
+            });
+        })
+        .catch(error => {
+            console.error("Error fetching JSON:", error);
+        });
+    </script>
+
+</body>
+</html>
